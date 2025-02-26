@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './posts.entity';
 import { User } from '../users/user.entity';
+import { UserI } from 'src/users/user.interface';
 
 @Injectable()
 export class PostsService {
@@ -40,7 +41,7 @@ export class PostsService {
     return post;
   }
 
-  async create(user: User, title: string, body: string): Promise<Post> {
+  async create(user: UserI, title: string, body: string): Promise<Post> {
     const post = this.postsRepository.create({ title, body, user });
     return this.postsRepository.save(post);
   }
@@ -62,9 +63,9 @@ export class PostsService {
     return this.postsRepository.save(post);
   }
 
-  async remove(user: User, id: number): Promise<void> {
+  async remove(userId: number, id: number): Promise<void> {
     const post = await this.findOne(id);
-    if (post.user.id !== user.id) {
+    if (post.user.id !== userId) {
       throw new ForbiddenException(
         'You are not authorized to delete this post',
       );

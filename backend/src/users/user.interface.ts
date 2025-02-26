@@ -1,7 +1,7 @@
 export interface UserI {
   id?: number;
   provider: string;
-  providerId: number;
+  providerId: string;
   name: string;
   email: string;
 }

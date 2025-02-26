@@ -10,9 +10,6 @@ import { PostsModule } from './posts/posts.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        // console.log("password", configService.get('DB_PASSWORD'));
-        // console.log("user", configService.get('DB_USER'));
-        // console.log("dbname", configService.get('DB_NAME'));
         return {
           type: 'postgres',
           host: configService.get('DB_HOST'),
@@ -28,6 +25,6 @@ import { PostsModule } from './posts/posts.module';
     }),
     AuthModule,
     PostsModule,
-  ]
+  ],
 })
 export class AppModule {}

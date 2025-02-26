@@ -22,7 +22,7 @@ export class AuthService {
       where: { provider, providerId },
     });
     if (!user) {
-      user = this.usersRepository.create({ provider, providerId, name, email });
+      user = this.usersRepository.create({ provider, providerId, email, name });
       await this.usersRepository.save(user);
     }
     return user;
