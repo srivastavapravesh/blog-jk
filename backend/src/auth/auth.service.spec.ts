@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { User } from './../users/user.entity';
 import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../users/user.entity';
 
 describe('AuthService', () => {
   let service: AuthService;
   let userRepository: Repository<User>;
-  let jwtService: JwtService;
 
+  // Create mocks for the user repository and JwtService
   const mockUserRepository = {
     findOne: jest.fn(),
     create: jest.fn(),
@@ -17,7 +17,7 @@ describe('AuthService', () => {
   };
 
   const mockJwtService = {
-    sign: jest.fn(),
+    signAsync: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -30,24 +30,26 @@ describe('AuthService', () => {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    userRepository = module.get(getRepositoryToken(User));
-    jwtService = module.get<JwtService>(JwtService);
+    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
+    mockJwtService.signAsync = jest.fn();
   });
 
   describe('validateUser', () => {
     it('should return existing user if found', async () => {
-      const user = {
+      const existingUser = {
         id: 1,
         provider: 'google',
         providerId: '123',
         name: 'Test',
         email: 'test@example.com',
       };
-      mockUserRepository.findOne.mockResolvedValue(user);
+
+      // Mock repository method to return an existing user
+      mockUserRepository.findOne.mockResolvedValue(existingUser);
     
       const result = await service.validateUser('google', '123', 'Test', 'test@example.com');
     
-      expect(result).toEqual(expect.objectContaining(user));
+      expect(result).toEqual(expect.objectContaining(existingUser));
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { provider: 'google', providerId: '123' },
       });
@@ -61,16 +63,13 @@ describe('AuthService', () => {
         name: 'Test',
         email: 'test@example.com',
       };
+
+      // Simulate user not found initially, then create and save the user
       mockUserRepository.findOne.mockResolvedValue(null);
       mockUserRepository.create.mockReturnValue(newUser);
       mockUserRepository.save.mockResolvedValue(newUser);
 
-      const result = await service.validateUser(
-        'google',
-        '123',
-        'Test',
-        'test@example.com',
-      );
+      const result = await service.validateUser('google', '123', 'Test', 'test@example.com');
       expect(result).toEqual(expect.objectContaining(newUser));
       expect(mockUserRepository.create).toHaveBeenCalledWith({
         provider: 'google',
@@ -83,15 +82,20 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should return access token', async () => {
-      const user = { id: 1, email: 'test@example.com' };
-      mockJwtService.sign.mockReturnValue('token123');
-
+      const user = { id: 1, email: 'test@example.com', providerId: '123', name: 'Test User' };
+      // Mock JwtService to return a token string using signAsync
+      mockJwtService.signAsync.mockResolvedValue('token123');
+  
       const result = await service.login(user);
       expect(result).toEqual({ access_token: 'token123' });
-      expect(mockJwtService.sign).toHaveBeenCalledWith({
-        sub: 1,
-        email: 'test@example.com',
+      expect(mockJwtService.signAsync).toHaveBeenCalledWith({
+        id: user.id,
+        sub: user.providerId,
+        name: user.name,
+        email: user.email,
+        provider: 'google',
       });
     });
   });
+  
 });

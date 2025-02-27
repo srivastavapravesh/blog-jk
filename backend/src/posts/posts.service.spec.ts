@@ -3,7 +3,6 @@ import { PostsService } from './posts.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Post } from './posts.entity';
 import { Repository } from 'typeorm';
-import { CreatePostDto } from './dto/create-post.dto';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 
 describe('PostsService', () => {
@@ -35,11 +34,9 @@ describe('PostsService', () => {
       const posts = [{ id: 1, title: 'Test' }];
       mockPostsRepository.findAndCount.mockResolvedValue([posts, 1]);
 
-      const result = await service.findAll(1, 1, 10);
+      const result = await service.findAll(1, 10);
       expect(result).toEqual({ posts, total: 1 });
       expect(mockPostsRepository.findAndCount).toHaveBeenCalledWith({
-        where: { user: { id: 1 } },
-        relations: ['user'],
         skip: 0,
         take: 10,
       });

@@ -6,7 +6,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './posts.entity';
-import { User } from '../users/user.entity';
 import { UserI } from 'src/users/user.interface';
 
 @Injectable()
@@ -14,16 +13,15 @@ export class PostsService {
   constructor(
     @InjectRepository(Post)
     private postsRepository: Repository<Post>,
-  ) {}
+  ) { }
 
   async findAll(
-    userId: number,
     page: number = 1,
     limit: number = 10,
   ): Promise<{ posts: Post[]; total: number }> {
     const [posts, total] = await this.postsRepository.findAndCount({
-      where: { user: { id: userId } },
-      relations: ['user'],
+      // where: { user: { id: userId } },
+      // relations: ['user'],
       skip: (page - 1) * limit,
       take: limit,
     });

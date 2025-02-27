@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Blog Application</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog Application - Home</title>
+    <meta name="description" content="Explore insightful posts on our blog. Stay updated with the latest news, tips, and stories on [Your Topic]." />
+    <meta name="keywords" content="blog, posts, news, articles" />
+
+    <!-- <link href="./styles.css" rel="stylesheet"> -->
+    <base href="/">
+    <!-- Google Sign-In API -->
+    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+    <!-- Facebook SDK -->
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : 'YOUR_FACEBOOK_APP_ID',
+          cookie     : true,
+          xfbml      : true,
+          version    : 'v16.0'
+        });
+      };
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "https://connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+    </script>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <app-root>Loading...</app-root>
+  </body>
+</html>

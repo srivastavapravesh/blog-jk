@@ -14,14 +14,14 @@ export class LoginDto {
   @ApiProperty({ description: 'Unique provider ID (Google/Facebook user ID)' })
   @IsString()
   @IsNotEmpty({ message: 'Provider ID is required' })
-  providerId: string;
+  token: string;
 
-  @ApiProperty({ description: 'User email address' })
-  @IsEmail({}, { message: 'Email must be a valid email address' })
-  email: string;
+  // @ApiProperty({ description: 'User email address' })
+  // @IsEmail({}, { message: 'Email must be a valid email address' })
+  // email: string;
 
-  @ApiProperty({ description: 'User full name' })
-  @IsString()
-  @IsNotEmpty({ message: 'Name is required' })
-  name: string;
+  // @ApiProperty({ description: 'User full name' })
+  // @IsString()
+  // @IsNotEmpty({ message: 'Name is required' })
+  // name: string;
 }

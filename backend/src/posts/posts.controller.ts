@@ -29,19 +29,17 @@ import {
 export class PostsController {
   constructor(private postsService: PostsService) {}
 
-  @UseGuards(AuthGuard('jwt'))
   @Get()
-  @ApiOperation({ summary: 'Retrieve all posts for a user' })
+  @ApiOperation({ summary: 'Retrieve all posts' })
   @ApiResponse({
     status: 200,
     description: 'List of user posts returned successfully.',
   })
   async findAll(
-    @Request() req,
     @Query('page') page: string,
     @Query('limit') limit: string,
   ) {
-    return this.postsService.findAll(req.user.id, +page || 1, +limit || 10);
+    return this.postsService.findAll(+page || 1, +limit || 10);
   }
 
   @Get(':id')
